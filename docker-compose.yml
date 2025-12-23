@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    # For local development you can attach to logs:
+    # docker compose up --build
