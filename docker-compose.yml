@@ -7,10 +7,36 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=8000
+      - MONGO_URI=mongodb://mongo:27017/dts
     ports:
       - "8000:8000"
     volumes:
       - .:/app
       - /app/node_modules
+    depends_on:
+      - mongo
     # For local development you can attach to logs:
     # docker compose up --build
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_BASICAUTH=true
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=pass1234
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
