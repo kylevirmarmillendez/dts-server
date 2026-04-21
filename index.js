@@ -6,6 +6,7 @@ const swaggerSpec = require('./config/swagger');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const documentRoutes = require('./routes/documentRoutes');
 const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authenticate, userRoutes);
+app.use('/api/documents', authenticate, documentRoutes);
 
 // Start the server
 app.listen(port, () => {

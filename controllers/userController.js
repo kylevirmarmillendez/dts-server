@@ -17,17 +17,17 @@ const createUser = async (req, res) => {
     return failure(res, 400, 'Validation failed.', errors);
   }
 
-  const { fname, lname, username, email, password, permission } = value;
+  const { fname, lname, username, email, password, permission, employee_id, division, section } = value;
 
-  const existingUser = await User.findOne({ $or: [{ email: email.toLowerCase() }, { username }] });
+  const existingUser = await User.findOne({ $or: [{ email: email.toLowerCase() }, { username }, { employee_id }] });
   if (existingUser) {
-    const field = existingUser.email === email.toLowerCase() ? 'email' : 'username';
+    const field = existingUser.email === email.toLowerCase() ? 'email' : existingUser.username === username ? 'username' : 'employee_id';
     return failure(res, 409, `A user with that ${field} already exists.`);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({ fname, lname, username, email, password: hashedPassword, permission });
+  const user = await User.create({ fname, lname, username, email, password: hashedPassword, permission, employee_id, division, section });
 
   const { password: _pw, ...userResponse } = user.toObject();
 
@@ -54,7 +54,7 @@ const updateUser = async (req, res) => {
     return failure(res, 400, 'Validation failed.', errors);
   }
 
-  const { fname, lname, username, email, password, permission } = value;
+  const { fname, lname, username, email, password, permission, employee_id, division, section } = value;
 
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -73,9 +73,17 @@ const updateUser = async (req, res) => {
     user.email = email;
   }
 
+  if (employee_id && employee_id !== user.employee_id) {
+    const taken = await User.findOne({ employee_id });
+    if (taken) return failure(res, 409, 'Employee ID already taken.');
+    user.employee_id = employee_id;
+  }
+
   if (fname) user.fname = fname;
   if (lname) user.lname = lname;
   if (permission) user.permission = permission;
+  if (division) user.division = division;
+  if (section) user.section = section;
   if (password) user.password = await bcrypt.hash(password, 10);
 
   await user.save();
