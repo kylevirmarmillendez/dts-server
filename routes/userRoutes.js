@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { createUser, getUsers, getUser, updateUser, deleteUser } = require('../controllers/userController');
+const { authorize } = require('../middleware/authorize');
+
+const superAdminOnly = authorize(['super_admin']);
 
 /**
  * @swagger
@@ -78,7 +81,7 @@ const { createUser, getUsers, getUser, updateUser, deleteUser } = require('../co
  *       409:
  *         description: Username or email already exists
  */
-router.post('/', createUser);
+router.post('/', superAdminOnly, createUser);
 
 /**
  * @swagger
@@ -96,7 +99,7 @@ router.post('/', createUser);
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/', getUsers);
+router.get('/', superAdminOnly, getUsers);
 
 /**
  * @swagger
@@ -120,7 +123,7 @@ router.get('/', getUsers);
  *       404:
  *         description: User not found
  */
-router.get('/:id', getUser);
+router.get('/:id', superAdminOnly, getUser);
 
 /**
  * @swagger
@@ -151,7 +154,7 @@ router.get('/:id', getUser);
  *       409:
  *         description: Username or email already taken
  */
-router.put('/:id', updateUser);
+router.put('/:id', superAdminOnly, updateUser);
 
 /**
  * @swagger
@@ -171,6 +174,6 @@ router.put('/:id', updateUser);
  *       404:
  *         description: User not found
  */
-router.delete('/:id', deleteUser);
+router.delete('/:id', superAdminOnly, deleteUser);
 
 module.exports = router;

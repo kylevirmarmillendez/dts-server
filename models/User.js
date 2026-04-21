@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
     },
     permission: {
       type: String,
-      enum: ['admin', 'user', 'viewer'],
+      enum: ['super_admin', 'admin', 'user', 'viewer'],
       default: 'user',
     },
   },

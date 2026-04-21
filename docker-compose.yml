@@ -8,6 +8,8 @@ services:
       - NODE_ENV=development
       - PORT=8000
       - MONGO_URI=mongodb://mongo:27017/dts
+      - JWT_SECRET=change_this_to_a_long_random_secret_before_production
+      - JWT_EXPIRES_IN=8h
     ports:
       - "8000:8000"
     volumes:

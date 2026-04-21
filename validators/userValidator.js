@@ -6,7 +6,7 @@ const createUserSchema = Joi.object({
   username: Joi.string().trim().alphanum().min(3).max(30).required(),
   email: Joi.string().trim().email().required(),
   password: Joi.string().min(8).max(128).required(),
-  permission: Joi.string().valid('admin', 'user', 'viewer'),
+  permission: Joi.string().valid('super_admin', 'admin', 'user', 'viewer'),
 });
 
 const updateUserSchema = Joi.object({
@@ -15,7 +15,7 @@ const updateUserSchema = Joi.object({
   username: Joi.string().trim().alphanum().min(3).max(30),
   email: Joi.string().trim().email(),
   password: Joi.string().min(8).max(128),
-  permission: Joi.string().valid('admin', 'user', 'viewer'),
+  permission: Joi.string().valid('super_admin', 'admin', 'user', 'viewer'),
 }).min(1);
 
 module.exports = { createUserSchema, updateUserSchema };

@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
 const port = 8000;
@@ -20,7 +23,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', authenticate, userRoutes);
 
 // Start the server
 app.listen(port, () => {
