@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({ fname, lname, username, email, password: hashedPassword, permission, employee_id, division, section });
+  const user = await User.create({ fname, lname, username, email, password: hashedPassword, permission, employee_id, division: division || null, section: section || null });
 
   const { password: _pw, ...userResponse } = user.toObject();
 
@@ -35,12 +35,12 @@ const createUser = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-  const users = await User.find().select('-password');
+  const users = await User.find().select('-password').populate('division', 'division_name');
   return success(res, 200, users, 'Users retrieved successfully.');
 };
 
 const getUser = async (req, res) => {
-  const user = await User.findById(req.params.id).select('-password');
+  const user = await User.findById(req.params.id).select('-password').populate('division', 'division_name');
   if (!user) {
     return failure(res, 404, 'User not found.');
   }
@@ -82,8 +82,8 @@ const updateUser = async (req, res) => {
   if (fname) user.fname = fname;
   if (lname) user.lname = lname;
   if (permission) user.permission = permission;
-  if (division) user.division = division;
-  if (section) user.section = section;
+  if (division !== undefined) user.division = division || null;
+  if (section !== undefined) user.section = section || null;
   if (password) user.password = await bcrypt.hash(password, 10);
 
   await user.save();

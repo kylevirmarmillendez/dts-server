@@ -31,8 +31,8 @@ const userSchema = new mongoose.Schema(
     },
     permission: {
       type: String,
-      enum: ['super_admin', 'admin', 'user', 'viewer'],
-      default: 'user',
+      enum: ['super_admin', 'admin', 'division_chief', 'admin_assistant', 'employee'],
+      default: 'employee',
     },
     employee_id: {
       type: String,
@@ -42,22 +42,8 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     division: {
-      type: String,
-      enum: [
-        'Office of the Regional Director',
-        'Office of the Assistant Regional Director for Operation',
-        'Office of the Assistant Regional Director for Administration',
-        'Policy and Plans Division',
-        'Innovations Division',
-        'Financial Management Division',
-        'Administrative Division',
-        'Human Resources Management Development Division',
-        'Protective Services Division',
-        'Promotive Services Division',
-        'Pantawid Pamilyang Pilipino Program',
-        'Disaster Response and Management Division',
-        null,
-      ],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Division',
       default: null,
     },
     section: {
